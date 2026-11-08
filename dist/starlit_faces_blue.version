@@ -1,0 +1,10 @@
+{
+  "masterVersionFile": "https://raw.githubusercontent.com/GaiusCassiusL/Starsector_Starlit-Faces/main/dist/starlit_faces_blue.version",
+  "modName": "Starlit Faces - Blue",
+  "modVersion": {
+    "major": 1,
+    "minor": 0,
+    "patch": 1
+  },
+  "directDownloadURL": "https://raw.githubusercontent.com/GaiusCassiusL/Starsector_Starlit-Faces/main/dist/Starlit-Faces-Blue-1.0.1.zip"
+}
