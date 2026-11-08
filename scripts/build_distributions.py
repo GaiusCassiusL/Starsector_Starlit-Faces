@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the five category portrait mods from the canonical all-portraits ZIP."""
+"""Build portrait packs and Version Checker metadata from the canonical All ZIP."""
 
 import argparse
 import json
@@ -20,6 +20,20 @@ GROUPS = (
     (None, "General", "StarlitFacesGeneral"),
 )
 PORTRAIT_PREFIX = "graphics/portraits/"
+RAW_URL = "https://raw.githubusercontent.com/GaiusCassiusL/Starsector_Starlit-Faces/main"
+
+
+def version_metadata(metadata, label):
+    version = metadata["version"]
+    if not re.fullmatch(r"\d+\.\d+\.\d+", version):
+        raise ValueError("Version Checker requires a major.minor.patch numeric version.")
+    major, minor, patch = map(int, version.split("."))
+    return {
+        "masterVersionFile": f"{RAW_URL}/dist/{metadata['id']}.version",
+        "modName": metadata["name"],
+        "modVersion": {"major": major, "minor": minor, "patch": patch},
+        "directDownloadURL": f"{RAW_URL}/dist/Starlit-Faces-{label}-{version}.zip",
+    }
 
 
 def safe_archive_path(name):
@@ -56,6 +70,8 @@ def build(canonical, dist):
     version = metadata.get("version")
     if not isinstance(version, str) or not re.fullmatch(r"[A-Za-z0-9._-]+", version):
         raise ValueError("Canonical version must be a filename-safe version string.")
+    if canonical.name != f"Starlit-Faces-All-{version}.zip":
+        raise ValueError("Canonical ZIP filename must match its mod metadata version.")
     faction = json.loads(files[faction_path])
     portraits = faction.get("portraits", {})
     male = portraits.get("standard_male", [])
@@ -133,6 +149,18 @@ def build(canonical, dist):
     if seen != set(all_paths):
         raise ValueError(f"Some portraits were not assigned to a group: {sorted(set(all_paths) - seen)}")
 
+    outputs.append((canonical.name, source_root, set(all_paths), metadata, faction))
+    version_files = {}
+    for _, _, _, mod_metadata, _ in outputs:
+        label = "All" if mod_metadata["id"] == metadata["id"] else mod_metadata["name"].split(" - ")[-1]
+        filename = f"{mod_metadata['id']}.version"
+        safe_archive_path(filename)
+        if "/" in filename:
+            raise ValueError("Mod ID must not contain path separators.")
+        version_files[filename] = json.dumps(
+            version_metadata(mod_metadata, label), indent=2
+        ) + "\n"
+
     dist.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".starlit-build-", dir=dist) as temporary:
         stage = Path(temporary)
@@ -140,6 +168,15 @@ def build(canonical, dist):
             with zipfile.ZipFile(
                 stage / name, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9
             ) as output:
+                if folder == source_root:
+                    for source_path, content in files.items():
+                        relative = source_path[len(source_root) + 1:]
+                        if relative not in (
+                            "mod_info.json", "data/world/factions/player.faction",
+                            "data/config/version/version_files.csv",
+                            f"{metadata['id']}.version",
+                        ) and not relative.startswith(PORTRAIT_PREFIX):
+                            output.writestr(source_path, content)
                 output.writestr(
                     f"{folder}/mod_info.json", json.dumps(group_metadata, indent=2) + "\n"
                 )
@@ -147,29 +184,51 @@ def build(canonical, dist):
                     f"{folder}/data/world/factions/player.faction",
                     json.dumps(group_faction, indent=2) + "\n",
                 )
+                version_name = f"{group_metadata['id']}.version"
+                output.writestr(f"{folder}/{version_name}", version_files[version_name])
+                output.writestr(
+                    f"{folder}/data/config/version/version_files.csv",
+                    f"version file\n{version_name}\n",
+                )
+                for notice in (() if folder == source_root else ("LICENSE", "PORTRAIT_NOTICE.txt")):
+                    source_path = f"{source_root}/{notice}"
+                    if source_path in files:
+                        output.writestr(f"{folder}/{notice}", files[source_path])
                 for path in sorted(selected, key=str.casefold):
                     output.writestr(f"{folder}/{path}", portrait_files[path])
             with zipfile.ZipFile(stage / name) as check:
                 if check.testzip() is not None:
                     raise ValueError(f"Generated ZIP failed integrity check: {name}")
 
-        backups = stage / "backups"
-        backups.mkdir()
+        for name, content in version_files.items():
+            (stage / name).write_text(content, encoding="utf-8")
+        publication_names = [item[0] for item in outputs] + list(version_files)
+        backups = Path(tempfile.mkdtemp(prefix=".starlit-backups-", dir=dist))
         published = []
+        preserve_backups = False
         try:
-            for name, *_ in outputs:
+            for name in publication_names:
                 target = dist / name
                 if target.exists():
                     shutil.copy2(target, backups / name)
                 (stage / name).replace(target)
                 published.append(name)
         except OSError:
-            for name in reversed(published):
-                if (backups / name).exists():
-                    (backups / name).replace(dist / name)
-                else:
-                    (dist / name).unlink()
+            try:
+                for name in reversed(published):
+                    if (backups / name).exists():
+                        (backups / name).replace(dist / name)
+                    else:
+                        (dist / name).unlink()
+            except OSError as rollback_error:
+                preserve_backups = True
+                raise RuntimeError(
+                    f"Build publication and rollback failed. Recovery backups: {backups}"
+                ) from rollback_error
             raise
+        finally:
+            if not preserve_backups:
+                shutil.rmtree(backups)
 
     for name, _, selected, _, _ in outputs:
         print(f"Built {name} ({len(selected)} portraits)")
@@ -185,6 +244,9 @@ def main():
         if len(candidates) != 1:
             parser.error("Expected one All ZIP in dist; select one with --canonical.")
         canonical = candidates[0]
+    canonical = canonical.resolve()
+    if canonical.parent != DIST.resolve():
+        parser.error("The canonical ZIP must be in dist so its update download URL is valid.")
     build(canonical, DIST)
 
 
