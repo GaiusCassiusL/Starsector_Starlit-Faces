@@ -1,6 +1,6 @@
 # Starlit Faces
 
-Starlit Faces is a Starsector portrait pack for **0.98a-RC8**. It adds 86 portraits to the player portrait pool: 8 male portraits and 78 female portraits.
+Starlit Faces is a Starsector portrait pack for **0.98a-RC8**. It adds 82 portraits to the player portrait pool: 8 male portraits and 74 female portraits.
 
 ## License and portrait notice
 
@@ -54,14 +54,14 @@ Before rebuilding, update this README's version numbers and pack counts, then re
 
 | ZIP | Contents |
 | --- | --- |
-| [Starlit-Faces-All-1.0.1.zip](dist/Starlit-Faces-All-1.0.1.zip) | All 86 portraits: 8 male and 78 female |
-| [Starlit-Faces-Red-1.0.1.zip](dist/Starlit-Faces-Red-1.0.1.zip) | 21 portraits with `red` in the filename: 2 male and 19 female |
-| [Starlit-Faces-Purple-1.0.1.zip](dist/Starlit-Faces-Purple-1.0.1.zip) | 21 portraits with `purple` in the filename: 2 male and 19 female |
-| [Starlit-Faces-Orange-1.0.1.zip](dist/Starlit-Faces-Orange-1.0.1.zip) | 21 portraits with `orange` in the filename: 2 male and 19 female |
+| [Starlit-Faces-All-1.0.1.zip](dist/Starlit-Faces-All-1.0.1.zip) | All 82 portraits: 8 male and 74 female |
+| [Starlit-Faces-Red-1.0.1.zip](dist/Starlit-Faces-Red-1.0.1.zip) | 20 portraits with `red` in the filename: 2 male and 18 female |
+| [Starlit-Faces-Purple-1.0.1.zip](dist/Starlit-Faces-Purple-1.0.1.zip) | 20 portraits with `purple` in the filename: 2 male and 18 female |
+| [Starlit-Faces-Orange-1.0.1.zip](dist/Starlit-Faces-Orange-1.0.1.zip) | 20 portraits with `orange` in the filename: 2 male and 18 female |
 | [Starlit-Faces-Blue-1.0.1.zip](dist/Starlit-Faces-Blue-1.0.1.zip) | 10 portraits with `blue` in the filename: all female |
-| [Starlit-Faces-General-1.0.1.zip](dist/Starlit-Faces-General-1.0.1.zip) | The remaining 13 portraits without those color names: 2 male and 11 female |
+| [Starlit-Faces-General-1.0.1.zip](dist/Starlit-Faces-General-1.0.1.zip) | The remaining 12 portraits without those color names: 2 male and 10 female |
 
-The five category builds split all 86 portraits into non-overlapping groups. Marine1, Marine2, and their color variants are registered as male portraits; the others are registered as female portraits.
+The five category builds split all 82 portraits into non-overlapping groups. Marine1, Marine2, and their color variants are registered as male portraits; the others are registered as female portraits.
 
 When upgrading from an older portrait set, remove the previous Starlit Faces mod folders before extracting these builds. Do not merge folders: obsolete image files may otherwise remain on disk.
 
