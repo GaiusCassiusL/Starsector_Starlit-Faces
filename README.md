@@ -2,6 +2,15 @@
 
 Starlit Faces is a Starsector portrait pack for **0.98a-RC8**. It adds 82 portraits to the player portrait pool: 8 male portraits and 74 female portraits.
 
+<p align="center">
+  <img src="graphics/portraits/Emma1.png" alt="Emma" width="128">
+  <img src="graphics/portraits/Inde1-red.png" alt="Inde — red variant" width="128">
+  <img src="graphics/portraits/Sophia1-orange.png" alt="Sophia — orange variant" width="128">
+  <img src="graphics/portraits/Sophia2.png" alt="Sophia" width="128">
+  <img src="graphics/portraits/Mia2-purple.png" alt="Mia — purple variant" width="128">
+  <img src="graphics/portraits/Olivia1-orange.png" alt="Olivia — orange variant" width="128">
+</p>
+
 ## License and portrait notice
 
 The entire project, including portraits, scripts, configuration, and documentation, is dedicated under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/). You may use, modify, redistribute, and incorporate it into your own works, including commercially, without attribution. See `LICENSE`.
