@@ -20,6 +20,7 @@ GROUPS = (
     (None, "General", "StarlitFacesGeneral"),
 )
 PORTRAIT_PREFIX = "graphics/portraits/"
+POOL_KEYS = ("standard_male", "standard_female", "player_male", "player_female")
 RAW_URL = "https://raw.githubusercontent.com/GaiusCassiusL/Starsector_Starlit-Faces/main"
 
 
@@ -74,11 +75,10 @@ def build(canonical, dist):
         raise ValueError("Canonical ZIP filename must match its mod metadata version.")
     faction = json.loads(files[faction_path])
     portraits = faction.get("portraits", {})
-    male = portraits.get("standard_male", [])
-    female = portraits.get("standard_female", [])
-    if not isinstance(male, list) or not isinstance(female, list):
+    pools = {key: portraits.get(key, []) for key in POOL_KEYS}
+    if any(not isinstance(paths, list) for paths in pools.values()):
         raise ValueError("Canonical portrait pools must be arrays.")
-    all_paths = male + female
+    all_paths = [path for paths in pools.values() for path in paths]
     if not all_paths or any(
         not isinstance(path, str)
         or not path.startswith(PORTRAIT_PREFIX)
@@ -86,8 +86,10 @@ def build(canonical, dist):
         for path in all_paths
     ):
         raise ValueError("Canonical portrait registrations contain invalid paths.")
-    if len(all_paths) != len(set(all_paths)):
-        raise ValueError("Canonical portrait registrations contain duplicate paths.")
+    for prefix in ("standard", "player"):
+        paths = pools[f"{prefix}_male"] + pools[f"{prefix}_female"]
+        if len(paths) != len(set(paths)):
+            raise ValueError(f"Canonical {prefix} portrait registrations contain duplicate paths.")
 
     portrait_files = {
         name[len(source_root) + 1 :]: content
@@ -124,10 +126,7 @@ def build(canonical, dist):
         seen.update(selected)
 
         group_faction = {"portraits": {}}
-        for key, registered in (
-            ("standard_male", male),
-            ("standard_female", female),
-        ):
+        for key, registered in pools.items():
             filtered = [path for path in registered if path in selected]
             if filtered:
                 group_faction["portraits"][key] = filtered

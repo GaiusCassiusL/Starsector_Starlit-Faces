@@ -25,11 +25,13 @@ The portraits are AI-generated depictions intended to represent fictional charac
 
 Install either the all-portraits ZIP or any selection of the five category ZIPs. You do not need all five category packs. Do not combine All with category packs, or portraits may appear more than once.
 
+Portraits are registered in both the standard and player pools, including the new-game character picker.
+
 Python is needed only to rebuild the distributions, not to install or play the mod.
 
 ## Rebuild the category ZIPs
 
-`Starlit-Faces-All-1.0.1.zip` is the canonical source mod. The other five ZIPs are generated from its images, metadata, and player portrait registrations; do not edit the generated ZIPs by hand.
+`Starlit-Faces-All-1.0.2.zip` is the canonical source mod. The other five ZIPs are generated from its images, metadata, and player portrait registrations; do not edit the generated ZIPs by hand.
 
 With Python 3 installed, run this from the repository root:
 
@@ -37,12 +39,12 @@ With Python 3 installed, run this from the repository root:
 python scripts/build_distributions.py
 ```
 
-The script replaces the Red, Purple, Orange, Blue, and General ZIPs in `dist`, refreshes Version Checker metadata inside the canonical All ZIP, and generates six public `.version` files. It validates the canonical ZIP and checks that every portrait is registered and assigned to exactly one category.
+The script replaces the Red, Purple, Orange, Blue, and General ZIPs in `dist`, refreshes Version Checker metadata inside the canonical All ZIP, and generates six public `.version` files. It validates all standard and player portrait pools and checks that every portrait asset is registered and assigned to exactly one category.
 
 The script automatically selects the sole `Starlit-Faces-All-*.zip` in `dist` and uses its metadata version for output filenames. If multiple versions exist, select one explicitly:
 
 ```sh
-python scripts/build_distributions.py --canonical dist/Starlit-Faces-All-1.0.1.zip
+python scripts/build_distributions.py --canonical dist/Starlit-Faces-All-1.0.2.zip
 ```
 
 All categories are validated and staged before existing builds are replaced. Publication errors restore the previous builds. If restoration also fails, the script reports a recovery backup directory and preserves it for manual recovery.
@@ -63,12 +65,12 @@ Before rebuilding, update this README's version numbers and pack counts, then re
 
 | ZIP | Contents |
 | --- | --- |
-| [Starlit-Faces-All-1.0.1.zip](dist/Starlit-Faces-All-1.0.1.zip) | All 82 portraits: 8 male and 74 female |
-| [Starlit-Faces-Red-1.0.1.zip](dist/Starlit-Faces-Red-1.0.1.zip) | 20 portraits with `red` in the filename: 2 male and 18 female |
-| [Starlit-Faces-Purple-1.0.1.zip](dist/Starlit-Faces-Purple-1.0.1.zip) | 20 portraits with `purple` in the filename: 2 male and 18 female |
-| [Starlit-Faces-Orange-1.0.1.zip](dist/Starlit-Faces-Orange-1.0.1.zip) | 20 portraits with `orange` in the filename: 2 male and 18 female |
-| [Starlit-Faces-Blue-1.0.1.zip](dist/Starlit-Faces-Blue-1.0.1.zip) | 10 portraits with `blue` in the filename: all female |
-| [Starlit-Faces-General-1.0.1.zip](dist/Starlit-Faces-General-1.0.1.zip) | The remaining 12 portraits without those color names: 2 male and 10 female |
+| [Starlit-Faces-All-1.0.2.zip](dist/Starlit-Faces-All-1.0.2.zip) | All 82 portraits: 8 male and 74 female |
+| [Starlit-Faces-Red-1.0.2.zip](dist/Starlit-Faces-Red-1.0.2.zip) | 20 portraits with `red` in the filename: 2 male and 18 female |
+| [Starlit-Faces-Purple-1.0.2.zip](dist/Starlit-Faces-Purple-1.0.2.zip) | 20 portraits with `purple` in the filename: 2 male and 18 female |
+| [Starlit-Faces-Orange-1.0.2.zip](dist/Starlit-Faces-Orange-1.0.2.zip) | 20 portraits with `orange` in the filename: 2 male and 18 female |
+| [Starlit-Faces-Blue-1.0.2.zip](dist/Starlit-Faces-Blue-1.0.2.zip) | 10 portraits with `blue` in the filename: all female |
+| [Starlit-Faces-General-1.0.2.zip](dist/Starlit-Faces-General-1.0.2.zip) | The remaining 12 portraits without those color names: 2 male and 10 female |
 
 The five category builds split all 82 portraits into non-overlapping groups. Marine1, Marine2, and their color variants are registered as male portraits; the others are registered as female portraits.
 
@@ -76,7 +78,7 @@ When upgrading from an older portrait set, remove the previous Starlit Faces mod
 
 ## Project layout
 
-- `dist/Starlit-Faces-All-1.0.1.zip` — authoritative mod source; edit this archive to update portraits or metadata.
+- `dist/Starlit-Faces-All-1.0.2.zip` — authoritative mod source; edit this archive to update portraits or metadata.
 - `mod_info.json`, `data/`, and `graphics/` — noncanonical extracted copy for inspection or local installation. Changes here do not affect builds; keep these files synchronized manually when editing the canonical ZIP.
 - `dist/` — canonical All ZIP, generated category ZIPs, and six generated master `.version` files for online update checks.
 - `scripts/` — distribution build script.
